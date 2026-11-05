@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 1 - Điện toán đám mây</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 2rem; color: #333; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #f4f4f4; }
+    h1, h2 { color: #2c3e50; }
+    ul { line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <h2>1. Bảng so sánh Máy cá nhân vs Codespace</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Tiêu chí</th>
+        <th>Máy cá nhân</th>
+        <th>Codespace</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Thời gian từ lúc bắt đầu đến khi chạy được <code>node -v</code></td>
+        <td>~5–10 phút (tải installer, cài đặt thủ công)</td>
+        <td>~1–2 phút (tự động dựng môi trường có sẵn)</td>
+      </tr>
+      <tr>
+        <td>Số CPU, RAM (từ API)</td>
+        <td>[8] Cores, [16] GB RAM</td>
+        <td>2 Cores, ~8 GB RAM (theo JSON API)</td>
+      </tr>
+      <tr>
+        <td>Hệ điều hành</td>
+        <td>Windows 11 </td>
+        <td>Linux </td>
+      </tr>
+      <tr>
+        <td>Cách truy cập từ thiết bị khác</td>
+        <td>Cùng mạng Wi-Fi (LAN), mở qua IP nội bộ và mở Port Firewall</td>
+        <td>Bật Public port, truy cập qua URL HTTPS công khai từ mọi mạng</td>
+      </tr>
+      <tr>
+        <td>Chi phí, đo bằng gì</td>
+        <td>Chi phí mua phần cứng, tiền điện tiêu thụ (VND/kWh)</td>
+        <td>Đo bằng Core-giờ (Core-hours) và GB-tháng lưu trữ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. Đối chiếu 5 đặc tính điện toán đám mây theo NIST</h2>
+  <ul>
+    <li><strong>Tự phục vụ theo yêu cầu (On-demand self-service):</strong> Tự khởi tạo môi trường máy ảo lập trình chỉ qua nút "Create codespace" mà không cần admin duyệt hay can thiệp thủ công.</li>
+    <li><strong>Truy cập mạng rộng (Broad network access):</strong> Lập trình trên trình duyệt web và gọi API từ điện thoại di động qua mạng Internet thông thường.</li>
+    <li><strong>Gộp tài nguyên (Resource pooling):</strong> Máy ảo Codespace được trích xuất từ cụm máy chủ dùng chung của GitHub/Azure phục vụ nhiều người dùng đồng thời.</li>
+    <li><strong>Co giãn nhanh (Rapid elasticity):</strong> Máy ảo được tạo mới, mở rộng hoặc thu hồi tài nguyên ngay lập tức khi người dùng Start hoặc Stop codespace.</li>
+    <li><strong>Dịch vụ đo lường được (Measured service):</strong> Hệ thống theo dõi chính xác từng core-giờ hoạt động được thống kê chi tiết trong trang GitHub Billing.</li>
+  </ul>
+</body>
+</html>
