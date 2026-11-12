@@ -76,13 +76,13 @@
     <tbody>
       <tr>
         <td>Thời gian khởi động</td>
-        <td>Từ lúc bắt đầu tạo Apps/VM đến khi terminal sẵn sàng</td>
-        <td>Đo bằng lệnh <code>docker run -d --name notes2 -p 3001:3000 --cpus=0.5 --memory=128m notes-api:1.0</code></td>
+        <td>3 phút 20 giây</td>
+        <td>7 giây</td>
       </tr>
       <tr>
         <td>Kích thước</td>
-        <td>Máy ảo riêng, có không gian lưu trữ và OS riêng</td>
-        <td>Container chạy từ Docker image <code>notes-api:1.0</code>, không có ổ đĩa riêng</td>
+        <td>15 GB-tháng hạn mức đĩa</td>
+        <td>251MB</td>
       </tr>
       <tr>
         <td>Hệ điều hành</td>
@@ -110,22 +110,22 @@
       <tr>
         <td>1</td>
         <td>Mặc định</td>
-        <td>40.1 giây (đã quan sát được từ output mặc định của CloudSim Plus)</td>
+        <td>0.1 giây</td>
       </tr>
       <tr>
         <td>2</td>
         <td>Thay đổi số VM</td>
-        <td>Ghi kết quả thực tế sau khi đổi <code>VMS</code> một cách độc lập</td>
+        <td>20 giây</td>
       </tr>
       <tr>
         <td>3</td>
         <td>Thay đổi số lõi VM</td>
-        <td>Ghi kết quả thực tế sau khi đổi <code>VM_PES</code> một cách độc lập</td>
+        <td>40 giây</td>
       </tr>
       <tr>
         <td>4</td>
         <td>Đổi scheduler sang <code>CloudletSchedulerSpaceShared</code></td>
-        <td>Ghi kết quả thực tế sau khi thêm <code>.setCloudletScheduler(new CloudletSchedulerSpaceShared())</code></td>
+        <td>40.1 giây</code></td>
       </tr>
     </tbody>
   </table>
