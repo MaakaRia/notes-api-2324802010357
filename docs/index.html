@@ -60,5 +60,90 @@
     <li><strong>Co giãn nhanh (Rapid elasticity):</strong> Máy ảo được tạo mới, mở rộng hoặc thu hồi tài nguyên ngay lập tức khi người dùng Start hoặc Stop codespace.</li>
     <li><strong>Dịch vụ đo lường được (Measured service):</strong> Hệ thống theo dõi chính xác từng core-giờ hoạt động được thống kê chi tiết trong trang GitHub Billing.</li>
   </ul>
+
+  <h2>3. Docker, GHCR và kiểm tra giới hạn tài nguyên</h2>
+  <p><strong>Package GHCR:</strong> <a href="https://github.com/users/MaakaRia/packages/container/notes-api" target="_blank" rel="noopener">https://github.com/users/MaakaRia/packages/container/notes-api</a></p>
+  <p><strong>Dockerfile:</strong> nằm ở thư mục gốc của repo, với cấu hình chạy Node.js trên cổng 3000, sao chép package.json và src, đặt biến môi trường PORT và bật USER node.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tiêu chí</th>
+        <th>Codespace (máy ảo)</th>
+        <th>Container notes2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Thời gian khởi động</td>
+        <td>Từ lúc bắt đầu tạo Apps/VM đến khi terminal sẵn sàng</td>
+        <td>Đo bằng lệnh <code>docker run -d --name notes2 -p 3001:3000 --cpus=0.5 --memory=128m notes-api:1.0</code></td>
+      </tr>
+      <tr>
+        <td>Kích thước</td>
+        <td>Máy ảo riêng, có không gian lưu trữ và OS riêng</td>
+        <td>Container chạy từ Docker image <code>notes-api:1.0</code>, không có ổ đĩa riêng</td>
+      </tr>
+      <tr>
+        <td>Hệ điều hành</td>
+        <td>Riêng, chạy trên VM</td>
+        <td>Dùng chung kernel của host, nhưng tách không gian process bằng container</td>
+      </tr>
+      <tr>
+        <td>Mức cố lập / tài nguyên</td>
+        <td>Theo cấu hình máy ảo Codespace</td>
+        <td>Giới hạn bởi <code>--cpus=0.5 --memory=128m</code>, được kiểm tra qua <code>docker stats</code> và <code>docker inspect</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>4. Bảng mô phỏng CloudSim Plus (4 lần chạy)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lần chạy</th>
+        <th>Thay đổi</th>
+        <th>Thời điểm hoàn thành cloudlet cuối</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Mặc định</td>
+        <td>40.1 giây (đã quan sát được từ output mặc định của CloudSim Plus)</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Thay đổi số VM</td>
+        <td>Ghi kết quả thực tế sau khi đổi <code>VMS</code> một cách độc lập</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Thay đổi số lõi VM</td>
+        <td>Ghi kết quả thực tế sau khi đổi <code>VM_PES</code> một cách độc lập</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Đổi scheduler sang <code>CloudletSchedulerSpaceShared</code></td>
+        <td>Ghi kết quả thực tế sau khi thêm <code>.setCloudletScheduler(new CloudletSchedulerSpaceShared())</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. Câu hỏi phản biện</h2>
+  <ol>
+    <li>
+      <strong>Vì sao API trong container <code>notes2</code> vẫn báo <code>memoryGB</code> bằng RAM máy chủ dù đã giới hạn 128 MB?</strong>
+      <p>Vì dữ liệu <code>os.totalmem()</code> và <code>os.cpus()</code> trả về thông tin của hệ thống Linux bên trong container, không phải giới hạn cgroups mà Docker áp đặt cho container. Ứng dụng Node.js/Java thường chỉ đọc tài nguyên của hệ điều hành bên trong container, nên nếu muốn giám sát đúng giới hạn thực tế cần dựa trên <code>docker stats</code>, <code>docker inspect</code> hoặc các API cgroup. Đối với ứng dụng chạy trong container, cần nhớ rằng giới hạn tài nguyên là ở cấp runtime, không phải lúc ứng dụng tự hỏi hệ thống.</p>
+    </li>
+    <li>
+      <strong>Time-shared và space-shared khác nhau ra sao trong kết quả lần 3? Một nhà cung cấp đám mây hướng thị trường sẽ chọn chính sách nào cho gói giá rẻ, vì sao?</strong>
+      <p>Time-shared cho phép nhiều cloudlet cùng chia sẻ CPU theo thời gian; space-shared phân bổ không gian tài nguyên cho từng cloudlet trên một VM và làm giảm xung đột đồng thời. Trong mô phỏng nhỏ, sự khác biệt không rõ ràng nếu tài nguyên còn dư. Với gói giá rẻ, nhà cung cấp thường ưu tiên <strong>space-shared</strong> hoặc phân bổ theo quota rõ ràng vì nó dễ dự đoán, dễ kiểm soát và phù hợp với khách hàng muốn chi phí thấp nhưng chắc chắn về tài nguyên.</p>
+    </li>
+    <li>
+      <strong>Mô phỏng giúp ích gì trước khi thuê hạ tầng thật, và kết quả mô phỏng có thể sai lệch với thực tế ở điểm nào?</strong>
+      <p>Mô phỏng giúp ước lượng trước hiệu năng, tài nguyên cần thiết, thời gian hoàn thành job và tác động của các chính sách lập lịch, giúp giảm rủi ro khi thuê máy ảo hoặc thuê máy chủ. Tuy nhiên, mô phỏng có thể lệch thực tế vì nó giả định các tham số như workload, đầu vào, đường truyền, hiệu suất bộ nhớ và I/O đồng nhất hoặc đơn giản hơn nhiều so với hệ thống thật. Những yếu tố như nhiệt độ, CPU turbo, cache, overhead hệ điều hành, I/O mạng hay sự bất thường của workload đều có thể làm sai lệch kết quả mô phỏng.</p>
+    </li>
+  </ol>
 </body>
 </html>
